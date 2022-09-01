@@ -8,7 +8,7 @@
 	</head>
 	<body>
 		<h1>Sign Up</h1>
-		<% if(errors !== null) {%>
+		<% if(typeof errors !== 'undefined') {%>
 		<p><%= `${errors.msg}` %></p>
 		<%}%>
 		<form action="/register" method="POST">

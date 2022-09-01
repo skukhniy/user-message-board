@@ -12,7 +12,7 @@ router.get("/", function (req, res, next) {
 
 //validators to check if same password was written down for confirmpass
 const passwordValidation = [
-	check("password").exists(),
+	check("password", "please enter a password").exists(),
 	check(
 		"passwordConfirm",
 		"Confirm Password field must have the same value as the password field"
