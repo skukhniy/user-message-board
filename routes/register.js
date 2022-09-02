@@ -1,12 +1,10 @@
 var express = require("express");
 const bcrypt = require("bcrypt");
 var router = express.Router();
-const User = require("../models/user");
+// const User = require("../models/user");
 
 const { check, validationResult } = require("express-validator");
 const e = require("express");
-
-const user = require("../models/user");
 
 // get signup page
 router.get("/", function (req, res, next) {
