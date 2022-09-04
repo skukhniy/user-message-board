@@ -4,6 +4,11 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var dotenv = require("dotenv");
+const session = require("express-session");
+const bcrypt = require("bcrypt");
+const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const User = require("./models/user");
 var mongoose = require("mongoose");
 
 // configs dotenv so the password can be grabbed from the env file
@@ -23,6 +28,42 @@ var app = express();
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
+// sets up passport
+passport.use(
+	new LocalStrategy((username, password, done) => {
+		User.findOne({ username: username }, (err, user) => {
+			if (err) {
+				return done(err);
+			}
+			if (!user) {
+				return done(null, false, { message: "Username not found" });
+			}
+			bcrypt.compare(password, user.password, (err, res) => {
+				if (res) {
+					// passwords match! log user in
+					return done(null, user);
+				} else {
+					// passwords do not match!
+					return done(null, false, { message: "Incorrect password" });
+				}
+			});
+		});
+	})
+);
+
+passport.serializeUser(function (user, done) {
+	done(null, user.id);
+});
+
+passport.deserializeUser(function (id, done) {
+	User.findById(id, function (err, user) {
+		done(err, user);
+	});
+});
+
+app.use(session({ secret: "dogs", resave: false, saveUninitialized: true }));
+app.use(passport.initialize());
+app.use(passport.session());
 app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -32,12 +73,11 @@ app.use(express.static(path.join(__dirname, "public")));
 // init routers
 var indexRouter = require("./routes/index");
 var registerRouter = require("./routes/register");
-var loginRouter = require("./routes/login");
 var usersRouter = require("./routes/users");
+const user = require("./models/user");
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/register", registerRouter);
-app.use("/login", loginRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

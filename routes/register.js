@@ -48,9 +48,6 @@ router.post("/", passwordValidation, async (req, res) => {
 				// successful, then redirect to home page
 				res.redirect("/");
 			});
-
-			// console.log({ username: req.body.username, password: hashedPassword });
-			// res.redirect("/");
 		}
 	} catch (error) {
 		console.log("bycrypt failed :(");
