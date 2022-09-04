@@ -34,21 +34,21 @@ router.post("/", passwordValidation, async (req, res) => {
 			console.log("trying bycrpt");
 			// hash password
 			const hashedPassword = await bcrypt.hash(req.body.password, 10);
-			// var user = new User({
-			// 	username: req.body.username,
-			// 	password: hashedPassword,
-			// });
-			// user.save(function (err) {
-			// 	if (err) {
-			// 		return next(err);
-			// 	}
+			var user = new User({
+				username: req.body.username,
+				password: hashedPassword,
+			});
+			user.save(function (err) {
+				if (err) {
+					return next(err);
+				}
 
-			// 	// successful, then redirect to home page
-			// 	res.redirect("/");
-			// });
+				// successful, then redirect to home page
+				res.redirect("/");
+			});
 
-			console.log({ username: req.body.username, password: hashedPassword });
-			res.redirect("/");
+			// console.log({ username: req.body.username, password: hashedPassword });
+			// res.redirect("/");
 		}
 	} catch (error) {
 		console.log("bycrypt failed :(");
