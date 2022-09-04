@@ -1,18 +1,34 @@
 var express = require("express");
 const bcrypt = require("bcrypt");
-var router = express.Router();
 const User = require("../models/user");
+const passport = require("passport");
 
 const { check, validationResult } = require("express-validator");
-const e = require("express");
 
-// get signup page
-router.get("/", function (req, res, next) {
-	res.render("register");
-});
+exports.checkAuthenticated = (req, res, next) => {
+	if (req.isAuthenticated()) {
+		console.log("is authenticated");
+		return next();
+	}
+	console.log("user is not authenticated");
+	res.redirect("/login");
+};
+
+exports.checkNotAuthenticated = (req, res, next) => {
+	if (req.isAuthenticated()) {
+		console.log("user is authenticated");
+		res.redirect("/");
+	}
+	console.log("user is not authenticated");
+	next();
+};
+
+exports.loadHome = function (req, res, next) {
+	res.render("userHome");
+};
 
 //validators to check if same password was written down for confirmpass
-const passwordValidation = [
+exports.passwordValidation = [
 	check("password", "please enter a password").exists(),
 	check(
 		"passwordConfirm",
@@ -22,8 +38,11 @@ const passwordValidation = [
 		.custom((value, { req }) => value === req.body.password),
 ];
 
-// grab data from submitted registration
-router.post("/", passwordValidation, async (req, res) => {
+exports.loadRegistration = function (req, res, next) {
+	res.render("register");
+};
+
+exports.submitRegistration = async (req, res) => {
 	try {
 		var err = validationResult(req);
 		if (!err.isEmpty()) {
@@ -54,17 +73,13 @@ router.post("/", passwordValidation, async (req, res) => {
 		console.error(error);
 		res.redirect("/register");
 	}
-});
+};
 
-module.exports = router;
-// app.post(
-//   '/create-user',
-//   check('password').exists(),
-//   check(
-//     'passwordConfirmation',
-//     'passwordConfirmation field must have the same value as the password field',
-//   )
-//     .exists()
-//     .custom((value, { req }) => value === req.body.password),
-//   loginHandler,
-// );
+exports.loadLogin = function (req, res, next) {
+	res.render("login");
+};
+
+exports.loginAuthentication = passport.authenticate("local", {
+	successRedirect: "/",
+	failureRedirect: "/login",
+});
