@@ -10,7 +10,7 @@ var mongoose = require("mongoose");
 dotenv.config();
 
 // connect to DB
-const mongoDB = `mongodb+srv://stanisloth:${process.env.password}@cluster0.yqlaigl.mongodb.net/?retryWrites=true&w=majority`;
+const mongoDB = `mongodb+srv://stanisloth:${process.env.password}@cluster0.yqlaigl.mongodb.net/members-only?retryWrites=true&w=majority`;
 mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true });
 var db = mongoose.connection;
 

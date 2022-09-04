@@ -1,7 +1,7 @@
 var express = require("express");
 const bcrypt = require("bcrypt");
 var router = express.Router();
-// const User = require("../models/user");
+const User = require("../models/user");
 
 const { check, validationResult } = require("express-validator");
 const e = require("express");
@@ -34,11 +34,13 @@ router.post("/", passwordValidation, async (req, res) => {
 			console.log("trying bycrpt");
 			// hash password
 			const hashedPassword = await bcrypt.hash(req.body.password, 10);
-			var user = new User({
+			// model schema
+			var Users = new User({
 				username: req.body.username,
 				password: hashedPassword,
 			});
-			user.save(function (err) {
+			// saves user to the DB
+			Users.save(function (err) {
 				if (err) {
 					return next(err);
 				}
