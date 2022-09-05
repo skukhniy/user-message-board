@@ -1,6 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const login_controller = require("../controllers/loginController");
+const message_controller = require("../controllers/messageController");
 
 /* GET home page. */
 router.get("/", login_controller.checkAuthenticated, login_controller.loadHome);
@@ -28,4 +29,11 @@ router.post(
 	login_controller.loginAuthentication
 );
 
+router.get(
+	"/create-message",
+	login_controller.checkAuthenticated,
+	message_controller.writeMessage
+);
+
+router.post("/create-message", message_controller.saveMessage);
 module.exports = router;
