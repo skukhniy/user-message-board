@@ -29,6 +29,8 @@ router.post(
 	login_controller.loginAuthentication
 );
 
+router.get("/logout", login_controller.logout);
+
 router.get(
 	"/create-message",
 	login_controller.checkAuthenticated,

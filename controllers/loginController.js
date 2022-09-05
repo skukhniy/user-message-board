@@ -90,3 +90,12 @@ exports.loginAuthentication = passport.authenticate("local", {
 	successRedirect: "/",
 	failureRedirect: "/login",
 });
+
+exports.logout = (req, res) => {
+	req.logout(function (err) {
+		if (err) {
+			return next(err);
+		}
+		res.redirect("/");
+	});
+};
