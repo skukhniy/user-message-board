@@ -9,6 +9,13 @@
 	<body>
 		<a href="/logout">Logout</a>
 		<h1>HOME</h1>
+		<% messages.forEach((message) => {%>
+		<li>
+			<p><%= message.message%></p>
+			<h5><%= `${message.username} -${message.date.toLocaleDateString()}`%></h5>
+			<%= %>
+		</li>
+		<%})%>
 		<a href="/create-message">Write a Message</a>
 	</body>
 </html>

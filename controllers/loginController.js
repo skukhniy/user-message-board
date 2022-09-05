@@ -1,6 +1,7 @@
 var express = require("express");
 const bcrypt = require("bcrypt");
 const User = require("../models/user");
+const Message = require("../models/messages");
 const passport = require("passport");
 
 const { check, validationResult } = require("express-validator");
@@ -24,7 +25,13 @@ exports.checkNotAuthenticated = (req, res, next) => {
 };
 
 exports.loadHome = function (req, res, next) {
-	res.render("userHome");
+	Message.find({}).exec((err, list_messages) => {
+		if (err) {
+			res.render("userHome");
+			return next(err);
+		}
+		res.render("userHome", { messages: list_messages });
+	});
 };
 
 //validators to check if same password was written down for confirmpass
